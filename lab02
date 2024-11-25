@@ -1,0 +1,148 @@
+#include <iostream>
+#include <deque>
+#include <cassert>
+using namespace std;
+
+struct Node {
+    Node(int v, Node* p)
+        : value(v), parent(p) {
+    }
+    int value;
+    Node* left = nullptr;
+    Node* right = nullptr;
+    Node* parent;
+};
+
+class NodeBuilder {
+public:
+    Node* CreateRoot(int value) {
+        nodes.emplace_back(value, nullptr);
+        return &nodes.back();
+    }
+
+    Node* CreateLeftSon(Node* me, int value) {
+        assert(me->left == nullptr);
+        nodes.emplace_back(value, me);
+        me->left = &nodes.back();
+        return me->left;
+    }
+
+    Node* CreateRightSon(Node* me, int value) {
+        assert(me->right == nullptr);
+        nodes.emplace_back(value, me);
+        me->right = &nodes.back();
+        return me->right;
+    }
+
+private:
+    deque<Node> nodes;
+};
+
+// Завдання 1: Пошук наступного вузла
+Node* Next(Node* me) {
+    if (me->right) {
+        me = me->right;
+        while (me->left) {
+            me = me->left;
+        }
+        return me;
+    }
+    while (me->parent && me == me->parent->right) {
+        me = me->parent;
+    }
+    return me->parent;
+}
+
+// Завдання 2: Прямий обхід (NLR)
+void Preorder(Node* node) {
+    if (node) {
+        cout << node->value << " ";
+        Preorder(node->left);
+        Preorder(node->right);
+    }
+}
+
+// Завдання 3: Зворотний обхід (LRN)
+void Postorder(Node* node) {
+    if (node) {
+        Postorder(node->left);
+        Postorder(node->right);
+        cout << node->value << " ";
+    }
+}
+
+// Завдання 4: Серединний обхід (LNR)
+void Inorder(Node* node) {
+    if (node) {
+        Inorder(node->left);
+        cout << node->value << " ";
+        Inorder(node->right);
+    }
+}
+
+// Тести
+void Test1() {
+    NodeBuilder nb;
+
+    Node* root = nb.CreateRoot(50);
+    Node* l = nb.CreateLeftSon(root, 2);
+    Node* min = nb.CreateLeftSon(l, 1);
+    Node* r = nb.CreateRightSon(l, 4);
+
+    nb.CreateLeftSon(r, 3);
+    nb.CreateRightSon(r, 5);
+
+    r = nb.CreateRightSon(root, 100);
+    l = nb.CreateLeftSon(r, 90);
+    nb.CreateRightSon(r, 101);
+
+    nb.CreateLeftSon(l, 89);
+    r = nb.CreateRightSon(l, 91);
+
+    // Перевірка функції Next
+    assert(Next(min)->value == 2);
+    assert(Next(l)->value == 91);
+    assert(Next(root)->value == 89);
+    assert(Next(r)->value == 100);
+
+    // Виведення в порядку зростання
+    cout << "Inorder traversal: ";
+    Node* current = min;
+    while (current) {
+        cout << current->value << " ";
+        current = Next(current);
+    }
+    cout << endl;
+}
+
+void TestTraversals() {
+    NodeBuilder nb;
+
+    Node* root = nb.CreateRoot(50);
+    Node* l = nb.CreateLeftSon(root, 30);
+    Node* r = nb.CreateRightSon(root, 70);
+
+    nb.CreateLeftSon(l, 20);
+    nb.CreateRightSon(l, 40);
+    nb.CreateLeftSon(r, 60);
+    nb.CreateRightSon(r, 80);
+
+    // Тести на обходи
+    cout << "Preorder traversal: ";
+    Preorder(root);
+    cout << endl;
+
+    cout << "Postorder traversal: ";
+    Postorder(root);
+    cout << endl;
+
+    cout << "Inorder traversal: ";
+    Inorder(root);
+    cout << endl;
+}
+
+int main() {
+    Test1();
+    TestTraversals();
+    return 0;
+}
