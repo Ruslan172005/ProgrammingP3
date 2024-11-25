@@ -1,0 +1,90 @@
+#include <iostream>
+#include <vector>
+
+class IntArray2 {
+private:
+    std::vector<int> data;  
+    size_t width, height;   
+
+public:
+    
+    IntArray2() : width(0), height(0) {}
+
+    
+    IntArray2(size_t w, size_t h) : width(w), height(h), data(w* h, 0) {}
+
+    
+    IntArray2(const IntArray2& other) = default;
+
+    
+    IntArray2(IntArray2&& other) noexcept = default;
+
+    
+    IntArray2& operator=(const IntArray2& other) = default;
+
+    
+    IntArray2& operator=(IntArray2&& other) noexcept = default;
+
+
+    size_t getWidth() const { return width; }
+
+    
+    size_t getHeight() const { return height; }
+
+    
+    size_t size() const { return width * height; }
+
+    
+    int& operator()(size_t x, size_t y) {
+        return data[y * width + x];
+    }
+
+    const int& operator()(size_t x, size_t y) const {
+        return data[y * width + x];
+    }
+
+   
+    friend std::ostream& operator<<(std::ostream& out, const IntArray2& arr) {
+        for (size_t y = 0; y < arr.height; ++y) {
+            for (size_t x = 0; x < arr.width; ++x) {
+                out << arr(x, y) << " ";
+            }
+            out << "\n";
+        }
+        return out;
+    }
+
+    
+    friend std::istream& operator>>(std::istream& in, IntArray2& arr) {
+        for (size_t y = 0; y < arr.height; ++y) {
+            for (size_t x = 0; x < arr.width; ++x) {
+                in >> arr(x, y);
+            }
+        }
+        return in;
+    }
+};
+
+int main() {
+   
+    IntArray2 arr(3, 3);  
+    std::cout << "press elements massive 3x3:\n";
+    std::cin >> arr;  
+
+    
+    std::cout << "massive:\n";
+    std::cout << arr;
+
+   
+    std::cout << "Element (1, 1): " << arr(1, 1) << "\n";
+    arr(1, 1) = 100; 
+    std::cout << "after change (1, 1):\n";
+    std::cout << arr;
+
+ 
+    std::cout << "weight: " << arr.getWidth() << "\n";
+    std::cout << "height: " << arr.getHeight() << "\n";
+    std::cout << "size massive: " << arr.size() << "\n";
+
+    return 0;
+}
