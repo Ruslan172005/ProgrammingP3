@@ -30,17 +30,17 @@ namespace Ini {
 
         std::string line;
         while (std::getline(input, line)) {
-            // Пропустити порожні рядки
+            
             if (line.empty()) {
                 continue;
             }
 
-            // Якщо це секція
+            
             if (line[0] == '[' && line.back() == ']') {
                 std::string section_name = line.substr(1, line.size() - 2);
                 current_section = &doc.AddSection(section_name);
             }
-            // Якщо це ключ-значення
+        
             else if (current_section) {
                 auto equal_pos = line.find('=');
                 if (equal_pos == std::string::npos) {
