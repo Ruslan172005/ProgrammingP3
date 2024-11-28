@@ -1,0 +1,23 @@
+[
+    {
+        "amount": 2500,
+        "category": "food"
+    },
+    {
+        "amount": 7500,
+        "category": "transport"
+    },
+    {
+        "amount": 4500,
+        "category": "clothes"
+    },
+    {
+        "amount": 500,
+        "category": "sport"
+    },
+    {
+        "amount": 500,
+        "category": "volunteering"
+    }
+]
+
